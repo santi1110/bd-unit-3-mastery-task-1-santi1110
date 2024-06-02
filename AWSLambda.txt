@@ -1,0 +1,15 @@
+START RequestId: d74e087b-8e5b-43db-9de1-6c1497b5a208 Version: $LATEST
+Request Received: RequestData{actionRequested='find', customerId=98765, payload=''}
+Response was: ResponseData{returnCode=0, aCustomer=null, message='Customer Id: 98765 found!', creationTimeStamp='2024-06-02 04:01:32.581'}
+END RequestId: d74e087b-8e5b-43db-9de1-6c1497b5a208
+REPORT RequestId: d74e087b-8e5b-43db-9de1-6c1497b5a208	Duration: 2.12 ms	Billed Duration: 3 ms	Memory Size: 512 MB	Max Memory Used: 89 MB
+START RequestId: 3c7b4f81-3eeb-4b38-950c-8864eb092ca0 Version: $LATEST
+Request Received: RequestData{actionRequested='add', customerId=0, payload=''}
+Response was: ResponseData{returnCode=0, aCustomer=Customer{customerID=7753094396380055201, customerName='', customerStreetAddress='null', customerCity='null', customerState='null', customerZip='null'}, message='Customer Id: 7753094396380055201, Name:   has been added!', creationTimeStamp='2024-06-02 04:05:09.139'}
+END RequestId: 3c7b4f81-3eeb-4b38-950c-8864eb092ca0
+REPORT RequestId: 3c7b4f81-3eeb-4b38-950c-8864eb092ca0	Duration: 451.46 ms	Billed Duration: 452 ms	Memory Size: 512 MB	Max Memory Used: 91 MB
+START RequestId: 7414d42c-0d54-4938-8d39-310e9e5ac02e Version: $LATEST
+Request Received: RequestData{actionRequested='delete', customerId=0, payload=''}
+Response was: ResponseData{returnCode=400, aCustomer=null, message='Invalid action: delete', creationTimeStamp='2024-06-02 04:05:48.941'}
+END RequestId: 7414d42c-0d54-4938-8d39-310e9e5ac02e
+REPORT RequestId: 7414d42c-0d54-4938-8d39-310e9e5ac02e	Duration: 19.28 ms	Billed Duration: 20 ms	Memory Size: 512 MB	Max Memory Used: 93 MB

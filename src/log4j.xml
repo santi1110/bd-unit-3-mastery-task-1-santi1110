@@ -1,17 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration packages="com.amazonaws.services.lambda.runtime.log4j2">
-    <Appenders>
-        <Lambda name="Lambda">
-            <PatternLayout>
-                <pattern>
-                    %d{yyyy-MM-dd HH:mm:ss} %X{AWSRequestId} %-5p %c{1}:%L — %m%n
-                </pattern>
-            </PatternLayout>
-        </Lambda>
-    </Appenders>
-    <Loggers>
-        <Root level="info">
-            <AppenderRef ref="Lambda"/>
-        </Root>
-    </Loggers>
-</Configuration>
+<dependencies>
+    <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-lambda-java-core</artifactId>
+        <version>1.2.1</version>
+    </dependency>
+    <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-lambda-java-events</artifactId>
+        <version>3.10.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.14.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>2.14.1</version>
+    </dependency>
+</dependencies>

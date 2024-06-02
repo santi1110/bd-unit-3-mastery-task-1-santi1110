@@ -5,73 +5,78 @@ import appdata.RequestData;
 import appdata.ResponseData;
 import appdata.DataStore;
 
-public class AppFunctions {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-    // TODO: Instantiate a log4j logger instance
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-    public ResponseData appMain(RequestData theRequest) {
+public class AppFunctions implements RequestHandler<RequestData, ResponseData> {
 
-        // Define a DataStore object with a pre-defined set of Customers
+    private static final Logger logger = LogManager.getLogger(AppFunctions.class);
+
+    @Override
+    public ResponseData handleRequest(RequestData theRequest, Context context) {
         DataStore theData = new DataStore();
 
-        // Define and initialize values and object to be returned in teh response object
         int returnCode = 0;
         String message = null;
         Customer returnedCustomer = null;
 
-
-        // Determine processing bsed on action requested
         switch (theRequest.getActionRequested().toLowerCase()) {
             case "find": {
                 returnedCustomer = theData.getACustomer(theRequest.getCustomerId());
-
-                // TODO - If customer is not found, write a message to the log, set the request message, and issue a return code 404
-
-                returnCode = 0;
-                message = "Customer Id: " + theRequest.getCustomerId() + " found!";
+                if (returnedCustomer == null) {
+                    logger.error("Customer with ID: " + theRequest.getCustomerId() + " not found.");
+                    message = "Customer with ID: " + theRequest.getCustomerId() + " not found.";
+                    returnCode = 404;
+                } else {
+                    returnCode = 0;
+                    message = "Customer Id: " + theRequest.getCustomerId() + " found!";
+                }
                 break;
             }
             case "chgname": {
-                theData.getACustomer(theRequest.getCustomerId()).setCustomerName(theRequest.getPayload());
                 returnedCustomer = theData.getACustomer(theRequest.getCustomerId());
-
-                // TODO - If customer is not found, write a message to the log, set the request message, and issue a return code 404
-
-                returnCode = 0;
-                message = "Customer Id: " + returnedCustomer.getCustomerID() + "'s name has been changed to:  " + returnedCustomer.getCustomerName() + "!";
+                if (returnedCustomer == null) {
+                    logger.error("Customer with ID: " + theRequest.getCustomerId() + " not found.");
+                    message = "Customer with ID: " + theRequest.getCustomerId() + " not found.";
+                    returnCode = 404;
+                } else {
+                    returnedCustomer.setCustomerName(theRequest.getPayload());
+                    message = "Customer Id: " + returnedCustomer.getCustomerID() + "'s name has been changed to: " + returnedCustomer.getCustomerName() + "!";
+                }
                 break;
             }
             case "add": {
                 String[] newData = theRequest.getPayload().split(",");
+                if (newData.length < 1 || newData[0].trim().isEmpty()) {
+                    logger.error("Insufficient data to add a new customer.");
+                    message = "Insufficient data to add a new customer.";
+                    returnCode = 422;
+                } else {
+                    returnedCustomer = new Customer();
+                    if (newData.length > 0) { returnedCustomer.setCustomerName(newData[0].trim()); }
+                    if (newData.length > 1) { returnedCustomer.setCustomerStreetAddress(newData[1].trim()); }
+                    if (newData.length > 2) { returnedCustomer.setCustomerCity(newData[2].trim()); }
+                    if (newData.length > 3) { returnedCustomer.setCustomerState(newData[3].trim()); }
+                    if (newData.length > 4) { returnedCustomer.setCustomerZip(newData[4].trim()); }
 
-                // TODO - if at least one value is not provided, we cannot add a new customer
-                //   so write a message to the log, set the request message, and issue a return code 422
-
-                returnedCustomer = new Customer();
-
-                if (newData.length > 0)  { returnedCustomer.setCustomerName(newData[0].trim());         }
-                if (newData.length > 1)  { returnedCustomer.setCustomerStreetAddress(newData[1].trim());}
-                if (newData.length > 2)  { returnedCustomer.setCustomerCity(newData[2].trim());         }
-                if (newData.length > 3)  { returnedCustomer.setCustomerState(newData[3].trim());        }
-                if (newData.length > 4)  { returnedCustomer.setCustomerZip(newData[4].trim());          }
-
-                returnCode = 0;
-                message = "Customer Id: " + returnedCustomer.getCustomerID() + ", Name:  " + returnedCustomer.getCustomerName() + " has been added!";
+                    message = "Customer Name: " + returnedCustomer.getCustomerName() + " has been added!";
+                }
                 break;
             }
             default: {
-                // TODO - if action provided is not one we expect...
-                //   write a message to the log, set the request message, and issue a return code 400
-
+                logger.error("Invalid action: " + theRequest.getActionRequested());
                 message = "Invalid action: " + theRequest.getActionRequested();
                 returnCode = 400;
-
             }
         }
 
-        ResponseData theResponse = new ResponseData(returnCode, returnedCustomer, message);
-
-        // Return the ResponseData object
-        return theResponse;
+        return new ResponseData(returnCode, returnedCustomer, message);
     }
 }
+
+
